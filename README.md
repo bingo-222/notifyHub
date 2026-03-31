@@ -357,7 +357,7 @@ curl -X POST http://localhost:8080/api/notify/submit \
 ```
 
 本地运行的截图：
-[!pic](./screenShot.png)
+![pic](./screenShot.png)
 
 
 ## 7. 项目结构
