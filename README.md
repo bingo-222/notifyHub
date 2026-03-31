@@ -34,6 +34,15 @@
 
 DB在这里主要是用于结果的审计和查询。如果在少数极端情况，比如秒杀，可以临时修改代码断开DB来保证QPS
 
+### 消息/任务状态机
+
+```
+PENDING → PROCESSING → SUCCESS
+                     → FAILED → (重试) → PENDING
+                              → (超过最大重试) → DEAD_LETTER
+```
+
+
 **核心组件说明**：
 
 - **Gateway**：接收业务系统请求，写入 DB + Redis，保证事务性.当外部压力相对大时，可以横向增加gateway的实例数目，
@@ -41,12 +50,24 @@ DB在这里主要是用于结果的审计和查询。如果在少数极端情况
 
 **关键机制**：
 
-1. **幂等性**：用户提交请求时需指定业务id `bizId`，Gateway 用其做幂等校验。重复提交返回：
+1. **幂等性**：用户提交请求时需指定业务id `bizId`，Gateway用其做幂等校验。当用相同的bizId重复提交后，会返回http code 200,但内部code 500：
    ```json
    {"code":500,"message":"提交失败：任务已存在，请勿重复提交（bizId: test-123451）","data":null}
    ```
 
-2. **供应商配置**：通过供应商代码 `supplierCode` 关联 `supplier-config.yml` 中的模板配置，实现不同供应商的header/body差异化处理.有新的供应商只要修改这个配置文件即可。这里要求用户在提交请求时就要提供相应的供应商id和header/body相应的值，worker需要根据这个id来找到target URL和body/header模板并填入相应的值。这里的原则是谁提交谁负责目标信息。本系统只保证从消息从用户到供应商之间的可靠送达，并不会根据业务规则来处理源到目标的匹配工作，这不是本系统的目的。如果后续模版太多，可以将配置文件放入配置中心。
+2. **供应商配置**：通过供应商代码 `supplierCode` 关联 `supplier-config.yml` 中的模板配置，实现不同供应商的header/body差异化处理.有新的供应商只要把新的模版添加到这个配置文件即可。这里要求用户在提交请求给gateway时就要提供相应的供应商code和header/body相应的值，例如：
+```bash
+curl -X POST http://localhost:8080/api/notify/submit \
+  -H "Content-Type: application/json" \
+  -d '{
+    "bizId": "biz-123456",
+    "supplierCode": "INVENTORY",
+    "headers": "{\"Authorization\":\"Bearer xxx\"}",
+    "body": "{\"orderId\":\"123456\",\"status\":\"completed\"}"
+  }'
+```
+
+worker需要根据这个supplierCode来在模板中找到target URL和其body/header模板并填入相应的值。这里的原则是谁提交谁负责目标信息。本系统只保证从消息从用户到供应商之间的可靠送达，并不会根据业务规则来处理源到目标的匹配工作，这不是本系统的目的。如果后续模版太多，可以将配置文件放入配置中心。
 
 3. **消息队列抽象**：定义 `MessageQueueService` 接口，当前实现 `RedisMessageQueueService`，便于后续扩展到 Kafka 等中间件
 
@@ -114,32 +135,6 @@ DB在这里主要是用于结果的审计和查询。如果在少数极端情况
 | 精确一次 | 极高 | 金融转账、订单支付 | ❌ 过度设计 |
 | 至少一次 | 中等 | 通知、邮件、短信 | ✅ 最佳平衡 |
 
-**实现方式：**
-```java
-// Worker 投递逻辑
-@Scheduled(fixedDelay = 1000)
-public void pollAndDeliver() {
-    // 1. 先更新状态为 PROCESSING（防止其他 Worker 重复消费）
-    updateTaskStatus(taskId, PROCESSING);
-    
-    // 2. 执行 HTTP 投递
-    try {
-        boolean success = httpClient.execute(request);
-        
-        // 3. 成功 → SUCCESS
-        if (success) {
-            updateTaskStatus(taskId, SUCCESS);
-        } 
-    } catch (Exception e) {
-        // 4. 失败 → FAILED + 重试
-        if (retryCount < maxRetryCount) {
-            reschedule(taskId, backoffDelay);
-        } else {
-            updateTaskStatus(taskId, DEAD_LETTER);
-        }
-    }
-}
-```
 
 **为什么不是精确一次？**
 - 外部供应商 API 本身不保证幂等性
@@ -219,7 +214,7 @@ public void compensateMissingInQueue() {
 
 | 过度设计 | 为什么不采纳 | 我的替代方案 |
 |----------|--------------|--------------|
-| Kafka/RocketMQ | ❌ 运维成本高<br>❌ 学习曲线陡<br>❌ 对于 QPS<5000 杀鸡用牛刀 | ✅ Redis ZSet<br>简单够用，团队熟悉 |
+| Kafka/RocketMQ | ❌ 运维成本高<br>❌ 学习曲线陡<br>❌ 对于 QPS<5000  | ✅ Redis ZSet<br>简单够用，团队熟悉 |
 | 分布式事务（Seata） | ❌ 性能损耗大<br>❌ 引入额外依赖<br>❌ 调试困难 | ✅ 最终一致性<br>DB + Redis + 补偿 |
 | 精确一次语义 | ❌ 需要两阶段提交<br>❌ 外部系统不支持<br>❌ 实现复杂度极高 | ✅ 至少一次 + 业务幂等<br>简单有效 |
 | 动态配置中心（Nacos） | ❌ 第一版不需要热更新<br>❌ 增加部署复杂度 | ✅ 配置文件 + 重启<br>够用 |
@@ -308,35 +303,8 @@ notify_task_202604    # 2026 年 4 月
 - **AI 预测**：基于历史数据预测高峰期，提前扩容
 - **Serverless**：用 AWS Lambda/阿里云函数计算替代 Worker
 
-### 🎯 我的演进原则
 
-- **不预先优化**
-  - 等有明确的性能瓶颈再改
-  - 现在的代码能支撑未来 2-3 倍增长
-
-- **可逆决策优先**
-  - 如果发现选错了，能低成本回退
-  - 例如：Redis → Kafka 容易，Kafka → Redis 难
-
-- **保持接口抽象**
-  - MessageQueueService 就是为演进准备的
-  - 切换底层实现不影响业务逻辑
-
-- **数据驱动决策**
-
-
-## 5. 核心特性与技术栈
-
-### 5.1 核心特性
-
-- ✅ **可靠性优先**：消息持久化 + 重试机制，确保通知不丢失
-- ✅ **异步投递**：将 HTTP 请求从业务主流程中剥离，降低业务系统延迟
-- ✅ **自动重试**：指数退避策略，处理网络波动和外部系统临时故障
-- ✅ **熔断限流**：防止单个供应商故障拖垮整个服务
-- ✅ **可观测性**：完整的状态追踪和监控指标（Prometheus）
-- ✅ **死信处理**：最终失败的消息支持人工干预
-
-### 5.2 技术栈
+## 5. 技术栈
 
 - **运行环境**: Java 11
 - **框架**: Spring Boot 2.7.18
@@ -348,7 +316,7 @@ notify_task_202604    # 2026 年 4 月
 - **监控**: Prometheus + Grafana
 - **部署**: Docker + Kubernetes
 
-## 6. 快速开始
+## 6. 运行和调试
 
 ### 本地开发（Docker Compose）
 
@@ -382,17 +350,15 @@ curl -X POST http://localhost:8080/api/notify/submit \
   -H "Content-Type: application/json" \
   -d '{
     "bizId": "biz-123456",
-    "supplierType": "INVENTORY",
+    "supplierCode": "INVENTORY",
     "headers": "{\"Authorization\":\"Bearer xxx\"}",
     "body": "{\"orderId\":\"123456\",\"status\":\"completed\"}"
   }'
 ```
 
-### 查询任务状态
+本地运行的截图：
+[!pic](./screenShot.png)
 
-```bash
-curl http://localhost:8080/api/notify/status/1
-```
 
 ## 7. 项目结构
 
@@ -418,48 +384,8 @@ notify-hub/
 └── scripts/                # 运维脚本
 ```
 
-## 核心设计
 
-### 可靠性保障
-
-1. **消息持久化**：所有通知任务立即写入 MySQL，确保不丢失
-2. **Redis 延迟队列**：使用 ZSet 实现高效的延迟队列，支持精确调度
-3. **补偿机制**：定时扫描 DB，补偿 Redis 中缺失的任务
-4. **指数退避重试**：1s, 5s, 30s, 1m, 5m, 30m... 最大 10 次
-5. **熔断隔离**：按供应商维度实现熔断，防止故障扩散
-
-### 状态机
-
-```
-PENDING → PROCESSING → SUCCESS
-                     → FAILED → (重试) → PENDING
-                              → (超过最大重试) → DEAD_LETTER
-```
-
-### 重试策略
-
-| 重试次数 | 延迟时间 | 累计时间 |
-|---------|---------|---------|
-| 1 | 1s | 1s |
-| 2 | 5s | 6s |
-| 3 | 30s | 36s |
-| 4 | 1m | 1m36s |
-| 5 | 5m | 6m36s |
-| 6 | 30m | 36m36s |
-| ... | ... | ... |
-| 10 | 30m | ~24h |
-
-### 失败处理
-
-| HTTP 状态码 | 处理方式 |
-|------------|---------|
-| 2xx | 成功，更新状态为 SUCCESS |
-| 400/401/403 | 配置错误，不重试，标记为 FAILED |
-| 429 | 被限流，触发退避重试 |
-| 5xx | 服务端错误，触发退避重试 |
-| 网络异常 | 触发退避重试 |
-
-## 9. 配置说明
+## 8. 配置说明
 
 ### Gateway 配置
 
@@ -517,22 +443,8 @@ Gateway 和 Worker 都配置了 HPA（Horizontal Pod Autoscaler），会根据 C
 - **Gateway**: 2-10 个副本
 - **Worker**: 3-20 个副本
 
-## 11. 监控告警
 
-### Prometheus 指标
-
-- `notify_task_submitted_total`: 提交的任务总数
-- `notify_task_delivered_total`: 成功投递的任务数
-- `notify_task_failed_total`: 投递失败的任务数
-- `notify_task_dead_letter_total`: 转入死信的任务数
-- `notify_delivery_duration_seconds`: 投递耗时分布
-- `notify_redis_queue_size`: Redis 队列中的任务数
-
-### Grafana 面板
-
-访问 http://localhost:3000 查看预置的监控面板。
-
-## 运维指南
+## 9. 运维指南
 
 ### 查看死信任务
 
@@ -558,26 +470,3 @@ WHERE id = <task_id>;
 - Gateway: `logs/gateway/notify-gateway.log`
 - Worker: `logs/worker/notify-worker.log`
 
-## 13. 常见问题
-
-### Q: 为什么不用 Kafka？
-
-A: 对于内部通知服务（QPS < 5000），DB + Redis 方案更简单可靠：
-- 单事务保证 DB 和 Redis 的最终一致性
-- 降低运维复杂度
-- Redis ZSet 天然支持延迟队列
-
-### Q: 如何保证幂等性？
-
-A: 业务系统提交时需携带唯一的 `bizId`，Gateway 层会进行幂等性校验。
-
-### Q: Redis 挂了怎么办？
-
-A: 
-1. 消息不丢失（DB 有持久化）
-2. 补偿任务会检测到 Redis 不可用
-3. 可临时降级为 DB 轮询模式
-
-### Q: 如何调整重试策略？
-
-A: 修改 `SubmitNotifyRequest` 中的 `maxRetryCount` 参数，或在代码中调整 `calculateBackoffDelay` 方法。
