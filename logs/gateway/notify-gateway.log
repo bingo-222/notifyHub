@@ -1,0 +1,32 @@
+2026-03-31 12:44:38.256 [main] INFO  com.company.notify.gateway.GatewayApplication - Starting GatewayApplication using Java 11.0.16 on b9f8ebe47766 with PID 1 (/app/notify-gateway.jar started by appuser in /app)
+2026-03-31 12:44:38.257 [main] DEBUG com.company.notify.gateway.GatewayApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
+2026-03-31 12:44:38.258 [main] INFO  com.company.notify.gateway.GatewayApplication - No active profile set, falling back to 1 default profile: "default"
+2026-03-31 12:44:38.909 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-03-31 12:44:38.912 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-03-31 12:44:38.934 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 6 ms. Found 0 Redis repository interfaces.
+2026-03-31 12:44:39.490 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-03-31 12:44:39.497 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-03-31 12:44:39.497 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.83]
+2026-03-31 12:44:39.545 [main] INFO  o.a.c.c.ContainerBase.[Tomcat].[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2026-03-31 12:44:39.545 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1244 ms
+2026-03-31 12:44:39.666 [main] INFO  c.company.notify.gateway.config.RateLimiterConfig - 全局限流器已初始化，QPS=100
+2026-03-31 12:44:39.725 [main] DEBUG c.c.notify.gateway.middleware.RateLimitFilter - Filter 'rateLimitFilter' configured for use
+2026-03-31 12:44:39.957 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-03-31 12:44:40.080 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-03-31 12:44:40.131 [main] INFO  org.flywaydb.core.internal.license.VersionPrinter - Flyway Community Edition 9.22.3 by Redgate
+2026-03-31 12:44:40.131 [main] INFO  org.flywaydb.core.internal.license.VersionPrinter - See release notes here: https://rd.gt/416ObMi
+2026-03-31 12:44:40.131 [main] INFO  org.flywaydb.core.internal.license.VersionPrinter - 
+2026-03-31 12:44:40.141 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://mysql:3306/notify_hub (MySQL 8.0)
+2026-03-31 12:44:40.165 [main] INFO  org.flywaydb.core.internal.command.DbValidate - Successfully validated 1 migration (execution time 00:00.012s)
+2026-03-31 12:44:40.173 [main] INFO  org.flywaydb.core.internal.command.DbMigrate - Current version of schema `notify_hub`: 1
+2026-03-31 12:44:40.174 [main] INFO  org.flywaydb.core.internal.command.DbMigrate - Schema `notify_hub` is up to date. No migration necessary.
+2026-03-31 12:44:40.277 [main] INFO  org.redisson.Version - Redisson 3.24.3
+2026-03-31 12:44:40.476 [redisson-netty-2-5] INFO  o.r.connection.pool.MasterPubSubConnectionPool - 1 connections initialized for redis/172.18.0.2:6379
+2026-03-31 12:44:40.539 [redisson-netty-2-20] INFO  org.redisson.connection.pool.MasterConnectionPool - 24 connections initialized for redis/172.18.0.2:6379
+2026-03-31 12:44:40.988 [main] INFO  o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 4 endpoint(s) beneath base path '/actuator'
+2026-03-31 12:44:41.016 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-03-31 12:44:41.029 [main] INFO  com.company.notify.gateway.GatewayApplication - Started GatewayApplication in 3.083 seconds (JVM running for 3.411)
+2026-03-31 12:44:41.083 [scheduling-1] DEBUG c.c.n.g.service.impl.RedisMessageQueueService - 从 Redis 接收到 1 条消息：queue=notify:queue
+2026-03-31 12:44:41.083 [scheduling-1] DEBUG c.c.notify.gateway.compensation.CompensationTask - 队列连接正常
+2026-03-31 12:44:53.461 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-03-31 12:44:53.466 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

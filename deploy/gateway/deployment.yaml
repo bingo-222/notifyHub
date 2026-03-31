@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notify-gateway
+  namespace: notify-hub
+  labels:
+    app: notify-gateway
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: notify-gateway
+  template:
+    metadata:
+      labels:
+        app: notify-gateway
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/api/actuator/prometheus"
+    spec:
+      containers:
+      - name: gateway
+        image: notify-hub/gateway:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        env:
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: notify-db-secret
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: notify-db-secret
+              key: password
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: notify-redis-secret
+              key: password
+        envFrom:
+        - configMapRef:
+            name: notify-gateway-config
+        - name: JAVA_OPTS
+          valueFrom:
+            configMapKeyRef:
+              name: notify-gateway-config
+              key: JAVA_OPTS
+        command: ["java"]
+        args:
+        - $(JAVA_OPTS)
+        - -jar
+        - /app/notify-gateway.jar
+        volumeMounts:
+        - name: logs
+          mountPath: /logs
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /api/actuator/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      volumes:
+      - name: logs
+        emptyDir: {}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - notify-gateway
+              topologyKey: kubernetes.io/hostname

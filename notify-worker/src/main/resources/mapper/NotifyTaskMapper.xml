@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.notify.worker.mapper.NotifyTaskMapper">
+
+    <resultMap id="BaseResultMap" type="com.company.notify.common.model.NotifyTask">
+        <id column="id" property="id"/>
+        <result column="biz_id" property="bizId"/>
+        <result column="supplier_type" property="supplierCode"/>
+        <result column="target_url" property="targetUrl"/>
+        <result column="http_method" property="httpMethod"/>
+        <result column="headers" property="headers"/>
+        <result column="body" property="body"/>
+        <result column="status" property="status"/>
+        <result column="retry_count" property="retryCount"/>
+        <result column="max_retry_count" property="maxRetryCount"/>
+        <result column="next_retry_at" property="nextRetryAt"/>
+        <result column="last_delivered_at" property="lastDeliveredAt"/>
+        <result column="failure_reason" property="failureReason"/>
+        <result column="last_error_message" property="lastErrorMessage"/>
+        <result column="ext_data" property="extData"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+</mapper>

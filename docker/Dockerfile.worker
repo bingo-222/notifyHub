@@ -1,0 +1,40 @@
+# Worker Dockerfile
+FROM maven:3.9-eclipse-temurin-11 AS builder
+
+WORKDIR /build
+
+# 复制父 POM
+COPY pom.xml .
+
+# 复制子模块 POM
+COPY notify-common/pom.xml notify-common/
+COPY notify-gateway/pom.xml notify-gateway/
+COPY notify-worker/pom.xml notify-worker/
+
+# 下载依赖
+RUN mvn dependency:go-offline -B
+
+# 复制源代码
+COPY notify-common/src notify-common/src
+COPY notify-worker/src notify-worker/src
+
+# 构建 Worker
+RUN mvn clean package -pl notify-worker -am -DskipTests -B
+
+# 运行阶段 - 使用官方 OpenJDK 镜像
+FROM openjdk:11-jre-slim
+
+WORKDIR /app
+
+# 创建非 root 用户
+RUN groupadd -g 1001 appgroup && useradd -u 1001 -s /bin/bash -g appgroup appuser
+
+# 复制构建产物
+COPY --from=builder /build/notify-worker/target/notify-worker-1.0.0-SNAPSHOT.jar /app/notify-worker.jar
+
+# 切换用户
+USER appuser
+
+EXPOSE 8081
+
+ENTRYPOINT ["java", "-jar", "/app/notify-worker.jar"]

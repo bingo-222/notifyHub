@@ -1,0 +1,102 @@
+# 供应商配置文件
+# 每个供应商的配置包含 URL、请求头模板、请求体模板等
+
+suppliers:
+  # 库存系统 - 使用 httpbin.org 作为测试
+  - supplierCode: "INVENTORY"
+    targetUrl: "https://httpbin.org/post"
+    httpMethod: "POST"
+    headersTemplate:
+      Content-Type: "application/json"
+      Authorization: "Bearer {{accessToken:default-token}}"
+      X-Supplier-Code: "{{supplierCode}}"
+    bodyTemplate: |
+      {
+        "orderId": "{{orderId}}",
+        "status": "{{status}}",
+        "timestamp": "{{timestamp}}",
+        "bizId": "{{bizId}}"
+      }
+    timeoutMs: 30000
+    maxRetryCount: 10
+
+  # CRM 系统
+  - supplierCode: "CRM"
+    targetUrl: "http://crm.internal/api/customer/notify"
+    httpMethod: "POST"
+    headersTemplate:
+      Content-Type: "application/json"
+      Authorization: "Bearer crm-token-xxx"
+      X-Source: "NotifyHub"
+    bodyTemplate: |
+      {
+        "eventType": "{{eventType}}",
+        "customerId": "{{customerId}}",
+        "data": {{data}},
+        "notifyTime": "{{timestamp}}"
+      }
+    timeoutMs: 20000
+    maxRetryCount: 5
+
+  # 广告系统
+  - supplierCode: "AD_SYSTEM"
+    targetUrl: "http://ad-system.internal/api/conversion"
+    httpMethod: "POST"
+    headersTemplate:
+      Content-Type: "application/json"
+      X-API-Key: "{{apiKey}}"
+    bodyTemplate: |
+      {
+        "userId": "{{userId}}",
+        "action": "{{action}}",
+        "orderId": "{{orderId}}",
+        "amount": {{amount}}
+      }
+    timeoutMs: 15000
+    maxRetryCount: 3
+
+  # 邮件服务
+  - supplierCode: "EMAIL"
+    targetUrl: "http://email.internal/api/send"
+    httpMethod: "POST"
+    headersTemplate:
+      Content-Type: "application/json"
+    bodyTemplate: |
+      {
+        "to": "{{to}}",
+        "subject": "{{subject}}",
+        "template": "{{template}}",
+        "params": {{params}}
+      }
+    timeoutMs: 30000
+    maxRetryCount: 5
+
+  # 短信服务
+  - supplierCode: "SMS"
+    targetUrl: "http://sms.internal/api/send"
+    httpMethod: "POST"
+    headersTemplate:
+      Content-Type: "application/json"
+    bodyTemplate: |
+      {
+        "phone": "{{phone}}",
+        "templateCode": "{{templateCode}}",
+        "templateParam": {{templateParam}}
+      }
+    timeoutMs: 10000
+    maxRetryCount: 3
+
+  # 自定义供应商示例
+  - supplierCode: "CUSTOM"
+    targetUrl: "http://custom.example.com/api/notify"
+    httpMethod: "PUT"
+    headersTemplate:
+      Content-Type: "application/json"
+      X-Custom-Header: "custom-value"
+    bodyTemplate: |
+      {
+        "customField1": "{{customField1}}",
+        "customField2": "{{customField2}}"
+      }
+    timeoutMs: 60000
+    maxRetryCount: 10

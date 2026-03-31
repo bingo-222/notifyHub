@@ -1,0 +1,506 @@
+2026-03-31 12:44:38.260 [main] INFO  com.company.notify.worker.WorkerApplication - Starting WorkerApplication using Java 11.0.16 on 858b9d5ff48f with PID 1 (/app/notify-worker.jar started by appuser in /app)
+2026-03-31 12:44:38.262 [main] DEBUG com.company.notify.worker.WorkerApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
+2026-03-31 12:44:38.263 [main] INFO  com.company.notify.worker.WorkerApplication - No active profile set, falling back to 1 default profile: "default"
+2026-03-31 12:44:38.935 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-03-31 12:44:38.936 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-03-31 12:44:38.956 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 5 ms. Found 0 Redis repository interfaces.
+2026-03-31 12:44:39.523 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+2026-03-31 12:44:39.531 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-03-31 12:44:39.532 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.83]
+2026-03-31 12:44:39.583 [main] INFO  o.a.c.c.ContainerBase.[Tomcat].[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2026-03-31 12:44:39.584 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1283 ms
+2026-03-31 12:44:39.828 [main] INFO  org.redisson.Version - Redisson 3.24.3
+2026-03-31 12:44:40.049 [redisson-netty-2-5] INFO  o.r.connection.pool.MasterPubSubConnectionPool - 1 connections initialized for redis/172.18.0.2:6379
+2026-03-31 12:44:40.109 [redisson-netty-2-20] INFO  org.redisson.connection.pool.MasterConnectionPool - 24 connections initialized for redis/172.18.0.2:6379
+2026-03-31 12:44:40.479 [main] INFO  c.c.notify.worker.config.SupplierConfigService - 开始加载供应商配置文件：classpath:supplier-config.yml
+2026-03-31 12:44:40.484 [main] INFO  c.c.notify.worker.config.SupplierConfigService - 加载供应商配置：INVENTORY -> https://httpbin.org/post
+2026-03-31 12:44:40.484 [main] INFO  c.c.notify.worker.config.SupplierConfigService - 加载供应商配置：CRM -> http://crm.internal/api/customer/notify
+2026-03-31 12:44:40.485 [main] INFO  c.c.notify.worker.config.SupplierConfigService - 加载供应商配置：AD_SYSTEM -> http://ad-system.internal/api/conversion
+2026-03-31 12:44:40.485 [main] INFO  c.c.notify.worker.config.SupplierConfigService - 加载供应商配置：EMAIL -> http://email.internal/api/send
+2026-03-31 12:44:40.485 [main] INFO  c.c.notify.worker.config.SupplierConfigService - 加载供应商配置：SMS -> http://sms.internal/api/send
+2026-03-31 12:44:40.485 [main] INFO  c.c.notify.worker.config.SupplierConfigService - 加载供应商配置：CUSTOM -> http://custom.example.com/api/notify
+2026-03-31 12:44:40.485 [main] INFO  c.c.notify.worker.config.SupplierConfigService - 成功加载 6 个供应商配置
+2026-03-31 12:44:40.942 [main] INFO  o.s.b.actuate.endpoint.web.EndpointLinksResolver - Exposing 4 endpoint(s) beneath base path '/actuator'
+2026-03-31 12:44:40.968 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path '/api'
+2026-03-31 12:44:40.979 [main] INFO  com.company.notify.worker.WorkerApplication - Started WorkerApplication in 3.031 seconds (JVM running for 3.362)
+2026-03-31 12:44:41.015 [scheduling-1] INFO  c.c.notify.worker.scheduler.DeliveryScheduler - 获取到 5 个待投递任务
+2026-03-31 12:44:41.039 [scheduling-1] INFO  c.c.notify.worker.scheduler.DeliveryScheduler - 【Worker】从 Redis 加载任务 - Task 结构体：bizId=test-12345, taskId=2038825462910889986, supplierCode=INVENTORY, url=null, method=POST, body={"orderId":"123456","status":"completed"}, status=FAILED, retryCount=2114/10, nextRetryAt=2026-03-31T08:04:27.166781
+2026-03-31 12:44:41.080 [scheduling-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-03-31 12:44:41.153 [scheduling-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-03-31 12:44:41.174 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】开始投递任务 - Task 结构体：bizId=test-12345, taskId=2038825462910889986, url=null, method=POST, headers={"Authorization":"Bearer xxx"}, body={"orderId":"123456","status":"completed"}, retryCount=2114/10, timeout=10000
+2026-03-31 12:44:41.175 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用供应商配置模式：bizId=test-12345, supplierCode=INVENTORY
+2026-03-31 12:44:41.175 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 使用供应商配置投递：supplierCode=INVENTORY, targetUrl=https://httpbin.org/post
+2026-03-31 12:44:41.182 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用配置构建请求：url=https://httpbin.org/post, method=POST, body={
+  "orderId": "123456",
+  "status": "completed",
+  "timestamp": "1774961081175",
+  "bizId": "test-12345"
+}
+
+2026-03-31 12:44:42.428 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递响应：bizId=test-12345, taskId=2038825462910889986, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:42.429 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】客户端错误，不重试：bizId=test-12345, taskId=2038825462910889986, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:42.430 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递失败：bizId=test-12345, taskId=2038825462910889986, httpCode=400, retryCount=2114, error=客户端错误：400
+2026-03-31 12:44:42.432 [scheduling-1] ERROR c.c.notify.worker.scheduler.DeliveryScheduler - 投递任务异常：message={"id":2038825462910889986,"bizId":"test-12345","supplierCode":"INVENTORY","targetUrl":null,"httpMethod":"POST","headers":"{\"Authorization\":\"Bearer xxx\"}","body":"{\"orderId\":\"123456\",\"status\":\"completed\"}","status":"FAILED","retryCount":2114,"maxRetryCount":10,"nextRetryAt":"2026-03-31T08:04:27.166781","lastDeliveredAt":null,"failureReason":null,"lastErrorMessage":null,"extData":null,"createdAt":"2026-03-31T11:47:24.550202","updatedAt":"2026-03-31T08:04:22.166782"}
+com.company.notify.common.exception.DeliveryException: 客户端错误：400
+	at com.company.notify.worker.service.DeliveryService.deliver(DeliveryService.java:110)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.deliverTaskFromQueue(DeliveryScheduler.java:128)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.pollAndDeliver(DeliveryScheduler.java:91)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(Unknown Source)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+2026-03-31 12:44:42.452 [scheduling-1] INFO  c.c.notify.worker.scheduler.DeliveryScheduler - 【Worker】从 Redis 加载任务 - Task 结构体：bizId=testid-1234, taskId=2038887363124731906, supplierCode=INVENTORY, url=null, method=POST, body={"orderId":"123456","status":"completed"}, status=FAILED, retryCount=124/10, nextRetryAt=2026-03-31T08:04:28.405998
+2026-03-31 12:44:42.457 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】开始投递任务 - Task 结构体：bizId=testid-1234, taskId=2038887363124731906, url=null, method=POST, headers={"Authorization":"Bearer xxx"}, body={"orderId":"123456","status":"completed"}, retryCount=124/10, timeout=10000
+2026-03-31 12:44:42.457 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用供应商配置模式：bizId=testid-1234, supplierCode=INVENTORY
+2026-03-31 12:44:42.457 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 使用供应商配置投递：supplierCode=INVENTORY, targetUrl=https://httpbin.org/post
+2026-03-31 12:44:42.458 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用配置构建请求：url=https://httpbin.org/post, method=POST, body={
+  "orderId": "123456",
+  "status": "completed",
+  "timestamp": "1774961082457",
+  "bizId": "testid-1234"
+}
+
+2026-03-31 12:44:42.724 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递响应：bizId=testid-1234, taskId=2038887363124731906, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:42.725 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】客户端错误，不重试：bizId=testid-1234, taskId=2038887363124731906, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:42.725 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递失败：bizId=testid-1234, taskId=2038887363124731906, httpCode=400, retryCount=124, error=客户端错误：400
+2026-03-31 12:44:42.725 [scheduling-1] ERROR c.c.notify.worker.scheduler.DeliveryScheduler - 投递任务异常：message={"id":2038887363124731906,"bizId":"testid-1234","supplierCode":"INVENTORY","targetUrl":null,"httpMethod":"POST","headers":"{\"Authorization\":\"Bearer xxx\"}","body":"{\"orderId\":\"123456\",\"status\":\"completed\"}","status":"FAILED","retryCount":124,"maxRetryCount":10,"nextRetryAt":"2026-03-31T08:04:28.405998","lastDeliveredAt":null,"failureReason":null,"lastErrorMessage":null,"extData":null,"createdAt":"2026-03-31T07:53:22.721296","updatedAt":"2026-03-31T08:04:23.406"}
+com.company.notify.common.exception.DeliveryException: 客户端错误：400
+	at com.company.notify.worker.service.DeliveryService.deliver(DeliveryService.java:110)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.deliverTaskFromQueue(DeliveryScheduler.java:128)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.pollAndDeliver(DeliveryScheduler.java:91)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(Unknown Source)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+2026-03-31 12:44:42.734 [scheduling-1] INFO  c.c.notify.worker.scheduler.DeliveryScheduler - 【Worker】从 Redis 加载任务 - Task 结构体：bizId=test-123451, taskId=2038827877213876226, supplierCode=INVENTORY, url=null, method=POST, body={"orderId":"123456","status":"completed"}, status=FAILED, retryCount=2021/10, nextRetryAt=2026-03-31T08:04:29.717298
+2026-03-31 12:44:42.736 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】开始投递任务 - Task 结构体：bizId=test-123451, taskId=2038827877213876226, url=null, method=POST, headers={"Authorization":"Bearer xxx"}, body={"orderId":"123456","status":"completed"}, retryCount=2021/10, timeout=10000
+2026-03-31 12:44:42.737 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用供应商配置模式：bizId=test-123451, supplierCode=INVENTORY
+2026-03-31 12:44:42.737 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 使用供应商配置投递：supplierCode=INVENTORY, targetUrl=https://httpbin.org/post
+2026-03-31 12:44:42.737 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用配置构建请求：url=https://httpbin.org/post, method=POST, body={
+  "orderId": "123456",
+  "status": "completed",
+  "timestamp": "1774961082737",
+  "bizId": "test-123451"
+}
+
+2026-03-31 12:44:43.031 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递响应：bizId=test-123451, taskId=2038827877213876226, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:43.031 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】客户端错误，不重试：bizId=test-123451, taskId=2038827877213876226, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:43.032 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递失败：bizId=test-123451, taskId=2038827877213876226, httpCode=400, retryCount=2021, error=客户端错误：400
+2026-03-31 12:44:43.033 [scheduling-1] ERROR c.c.notify.worker.scheduler.DeliveryScheduler - 投递任务异常：message={"id":2038827877213876226,"bizId":"test-123451","supplierCode":"INVENTORY","targetUrl":null,"httpMethod":"POST","headers":"{\"Authorization\":\"Bearer xxx\"}","body":"{\"orderId\":\"123456\",\"status\":\"completed\"}","status":"FAILED","retryCount":2021,"maxRetryCount":10,"nextRetryAt":"2026-03-31T08:04:29.717298","lastDeliveredAt":null,"failureReason":null,"lastErrorMessage":null,"extData":null,"createdAt":"2026-03-31T03:57:00.174165","updatedAt":"2026-03-31T08:04:24.717299"}
+com.company.notify.common.exception.DeliveryException: 客户端错误：400
+	at com.company.notify.worker.service.DeliveryService.deliver(DeliveryService.java:110)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.deliverTaskFromQueue(DeliveryScheduler.java:128)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.pollAndDeliver(DeliveryScheduler.java:91)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(Unknown Source)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+2026-03-31 12:44:43.045 [scheduling-1] INFO  c.c.notify.worker.scheduler.DeliveryScheduler - 【Worker】从 Redis 加载任务 - Task 结构体：bizId=test-biz-1774930194, taskId=2038831125651439617, supplierCode=INVENTORY, url=null, method=POST, body={"orderId":"123456","status":"completed"}, status=FAILED, retryCount=1873/10, nextRetryAt=2026-03-31T08:04:29.950720
+2026-03-31 12:44:43.050 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】开始投递任务 - Task 结构体：bizId=test-biz-1774930194, taskId=2038831125651439617, url=null, method=POST, headers={"Authorization":"Bearer xxx"}, body={"orderId":"123456","status":"completed"}, retryCount=1873/10, timeout=10000
+2026-03-31 12:44:43.050 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用供应商配置模式：bizId=test-biz-1774930194, supplierCode=INVENTORY
+2026-03-31 12:44:43.050 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 使用供应商配置投递：supplierCode=INVENTORY, targetUrl=https://httpbin.org/post
+2026-03-31 12:44:43.050 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用配置构建请求：url=https://httpbin.org/post, method=POST, body={
+  "orderId": "123456",
+  "status": "completed",
+  "timestamp": "1774961083050",
+  "bizId": "test-biz-1774930194"
+}
+
+2026-03-31 12:44:43.273 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递响应：bizId=test-biz-1774930194, taskId=2038831125651439617, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:43.274 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】客户端错误，不重试：bizId=test-biz-1774930194, taskId=2038831125651439617, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:43.274 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递失败：bizId=test-biz-1774930194, taskId=2038831125651439617, httpCode=400, retryCount=1873, error=客户端错误：400
+2026-03-31 12:44:43.275 [scheduling-1] ERROR c.c.notify.worker.scheduler.DeliveryScheduler - 投递任务异常：message={"id":2038831125651439617,"bizId":"test-biz-1774930194","supplierCode":"INVENTORY","targetUrl":null,"httpMethod":"POST","headers":"{\"Authorization\":\"Bearer xxx\"}","body":"{\"orderId\":\"123456\",\"status\":\"completed\"}","status":"FAILED","retryCount":1873,"maxRetryCount":10,"nextRetryAt":"2026-03-31T08:04:29.95072","lastDeliveredAt":null,"failureReason":null,"lastErrorMessage":null,"extData":null,"createdAt":"2026-03-31T04:09:54.652724","updatedAt":"2026-03-31T08:04:24.950721"}
+com.company.notify.common.exception.DeliveryException: 客户端错误：400
+	at com.company.notify.worker.service.DeliveryService.deliver(DeliveryService.java:110)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.deliverTaskFromQueue(DeliveryScheduler.java:128)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.pollAndDeliver(DeliveryScheduler.java:91)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(Unknown Source)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+2026-03-31 12:44:43.288 [scheduling-1] INFO  c.c.notify.worker.scheduler.DeliveryScheduler - 【Worker】从 Redis 加载任务 - Task 结构体：bizId=testid-1234, taskId=2038887363124731906, supplierCode=INVENTORY, url=null, method=POST, body={"orderId":"123456","status":"completed"}, status=FAILED, retryCount=124/10, nextRetryAt=2026-03-31T08:04:31.190662
+2026-03-31 12:44:43.291 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】开始投递任务 - Task 结构体：bizId=testid-1234, taskId=2038887363124731906, url=null, method=POST, headers={"Authorization":"Bearer xxx"}, body={"orderId":"123456","status":"completed"}, retryCount=124/10, timeout=10000
+2026-03-31 12:44:43.291 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用供应商配置模式：bizId=testid-1234, supplierCode=INVENTORY
+2026-03-31 12:44:43.291 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 使用供应商配置投递：supplierCode=INVENTORY, targetUrl=https://httpbin.org/post
+2026-03-31 12:44:43.291 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用配置构建请求：url=https://httpbin.org/post, method=POST, body={
+  "orderId": "123456",
+  "status": "completed",
+  "timestamp": "1774961083291",
+  "bizId": "testid-1234"
+}
+
+2026-03-31 12:44:43.542 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递响应：bizId=testid-1234, taskId=2038887363124731906, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:43.543 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】客户端错误，不重试：bizId=testid-1234, taskId=2038887363124731906, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:43.544 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递失败：bizId=testid-1234, taskId=2038887363124731906, httpCode=400, retryCount=124, error=客户端错误：400
+2026-03-31 12:44:43.545 [scheduling-1] ERROR c.c.notify.worker.scheduler.DeliveryScheduler - 投递任务异常：message={"id":2038887363124731906,"bizId":"testid-1234","supplierCode":"INVENTORY","targetUrl":null,"httpMethod":"POST","headers":"{\"Authorization\":\"Bearer xxx\"}","body":"{\"orderId\":\"123456\",\"status\":\"completed\"}","status":"FAILED","retryCount":124,"maxRetryCount":10,"nextRetryAt":"2026-03-31T08:04:31.190662","lastDeliveredAt":null,"failureReason":null,"lastErrorMessage":null,"extData":null,"createdAt":"2026-03-31T07:53:23","updatedAt":"2026-03-31T08:04:26.190664"}
+com.company.notify.common.exception.DeliveryException: 客户端错误：400
+	at com.company.notify.worker.service.DeliveryService.deliver(DeliveryService.java:110)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.deliverTaskFromQueue(DeliveryScheduler.java:128)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.pollAndDeliver(DeliveryScheduler.java:91)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(Unknown Source)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+2026-03-31 12:44:47.603 [scheduling-1] INFO  c.c.notify.worker.scheduler.DeliveryScheduler - 获取到 2 个待投递任务
+2026-03-31 12:44:47.606 [scheduling-1] INFO  c.c.notify.worker.scheduler.DeliveryScheduler - 【Worker】从 Redis 加载任务 - Task 结构体：bizId=test-12345, taskId=2038825462910889986, supplierCode=INVENTORY, url=null, method=POST, body={"orderId":"123456","status":"completed"}, status=FAILED, retryCount=2115/10, nextRetryAt=2026-03-31T12:44:47.433590
+2026-03-31 12:44:47.612 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】开始投递任务 - Task 结构体：bizId=test-12345, taskId=2038825462910889986, url=null, method=POST, headers={"Authorization":"Bearer xxx"}, body={"orderId":"123456","status":"completed"}, retryCount=2115/10, timeout=10000
+2026-03-31 12:44:47.612 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用供应商配置模式：bizId=test-12345, supplierCode=INVENTORY
+2026-03-31 12:44:47.612 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 使用供应商配置投递：supplierCode=INVENTORY, targetUrl=https://httpbin.org/post
+2026-03-31 12:44:47.613 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用配置构建请求：url=https://httpbin.org/post, method=POST, body={
+  "orderId": "123456",
+  "status": "completed",
+  "timestamp": "1774961087613",
+  "bizId": "test-12345"
+}
+
+2026-03-31 12:44:47.946 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递响应：bizId=test-12345, taskId=2038825462910889986, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:47.947 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】客户端错误，不重试：bizId=test-12345, taskId=2038825462910889986, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:47.947 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递失败：bizId=test-12345, taskId=2038825462910889986, httpCode=400, retryCount=2115, error=客户端错误：400
+2026-03-31 12:44:47.948 [scheduling-1] ERROR c.c.notify.worker.scheduler.DeliveryScheduler - 投递任务异常：message={"id":2038825462910889986,"bizId":"test-12345","supplierCode":"INVENTORY","targetUrl":null,"httpMethod":"POST","headers":"{\"Authorization\":\"Bearer xxx\"}","body":"{\"orderId\":\"123456\",\"status\":\"completed\"}","status":"FAILED","retryCount":2115,"maxRetryCount":10,"nextRetryAt":"2026-03-31T12:44:47.43359","lastDeliveredAt":null,"failureReason":null,"lastErrorMessage":null,"extData":null,"createdAt":"2026-03-31T11:47:24.550202","updatedAt":"2026-03-31T12:44:42.433616"}
+com.company.notify.common.exception.DeliveryException: 客户端错误：400
+	at com.company.notify.worker.service.DeliveryService.deliver(DeliveryService.java:110)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.deliverTaskFromQueue(DeliveryScheduler.java:128)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.pollAndDeliver(DeliveryScheduler.java:91)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(Unknown Source)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+2026-03-31 12:44:47.959 [scheduling-1] INFO  c.c.notify.worker.scheduler.DeliveryScheduler - 【Worker】从 Redis 加载任务 - Task 结构体：bizId=testid-1234, taskId=2038887363124731906, supplierCode=INVENTORY, url=null, method=POST, body={"orderId":"123456","status":"completed"}, status=FAILED, retryCount=125/10, nextRetryAt=2026-03-31T12:44:47.726233
+2026-03-31 12:44:47.963 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】开始投递任务 - Task 结构体：bizId=testid-1234, taskId=2038887363124731906, url=null, method=POST, headers={"Authorization":"Bearer xxx"}, body={"orderId":"123456","status":"completed"}, retryCount=125/10, timeout=10000
+2026-03-31 12:44:47.963 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用供应商配置模式：bizId=testid-1234, supplierCode=INVENTORY
+2026-03-31 12:44:47.963 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 使用供应商配置投递：supplierCode=INVENTORY, targetUrl=https://httpbin.org/post
+2026-03-31 12:44:47.963 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用配置构建请求：url=https://httpbin.org/post, method=POST, body={
+  "orderId": "123456",
+  "status": "completed",
+  "timestamp": "1774961087963",
+  "bizId": "testid-1234"
+}
+
+2026-03-31 12:44:48.253 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递响应：bizId=testid-1234, taskId=2038887363124731906, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:48.254 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】客户端错误，不重试：bizId=testid-1234, taskId=2038887363124731906, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:48.255 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递失败：bizId=testid-1234, taskId=2038887363124731906, httpCode=400, retryCount=125, error=客户端错误：400
+2026-03-31 12:44:48.255 [scheduling-1] ERROR c.c.notify.worker.scheduler.DeliveryScheduler - 投递任务异常：message={"id":2038887363124731906,"bizId":"testid-1234","supplierCode":"INVENTORY","targetUrl":null,"httpMethod":"POST","headers":"{\"Authorization\":\"Bearer xxx\"}","body":"{\"orderId\":\"123456\",\"status\":\"completed\"}","status":"FAILED","retryCount":125,"maxRetryCount":10,"nextRetryAt":"2026-03-31T12:44:47.726233","lastDeliveredAt":null,"failureReason":null,"lastErrorMessage":null,"extData":null,"createdAt":"2026-03-31T07:53:22.721296","updatedAt":"2026-03-31T12:44:42.726239"}
+com.company.notify.common.exception.DeliveryException: 客户端错误：400
+	at com.company.notify.worker.service.DeliveryService.deliver(DeliveryService.java:110)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.deliverTaskFromQueue(DeliveryScheduler.java:128)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.pollAndDeliver(DeliveryScheduler.java:91)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(Unknown Source)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+2026-03-31 12:44:49.271 [scheduling-1] INFO  c.c.notify.worker.scheduler.DeliveryScheduler - 获取到 3 个待投递任务
+2026-03-31 12:44:49.272 [scheduling-1] INFO  c.c.notify.worker.scheduler.DeliveryScheduler - 【Worker】从 Redis 加载任务 - Task 结构体：bizId=testid-1234, taskId=2038887363124731906, supplierCode=INVENTORY, url=null, method=POST, body={"orderId":"123456","status":"completed"}, status=FAILED, retryCount=125/10, nextRetryAt=2026-03-31T12:44:48.546823
+2026-03-31 12:44:49.277 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】开始投递任务 - Task 结构体：bizId=testid-1234, taskId=2038887363124731906, url=null, method=POST, headers={"Authorization":"Bearer xxx"}, body={"orderId":"123456","status":"completed"}, retryCount=125/10, timeout=10000
+2026-03-31 12:44:49.277 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用供应商配置模式：bizId=testid-1234, supplierCode=INVENTORY
+2026-03-31 12:44:49.278 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 使用供应商配置投递：supplierCode=INVENTORY, targetUrl=https://httpbin.org/post
+2026-03-31 12:44:49.278 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用配置构建请求：url=https://httpbin.org/post, method=POST, body={
+  "orderId": "123456",
+  "status": "completed",
+  "timestamp": "1774961089278",
+  "bizId": "testid-1234"
+}
+
+2026-03-31 12:44:49.585 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递响应：bizId=testid-1234, taskId=2038887363124731906, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:49.586 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】客户端错误，不重试：bizId=testid-1234, taskId=2038887363124731906, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:49.587 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递失败：bizId=testid-1234, taskId=2038887363124731906, httpCode=400, retryCount=125, error=客户端错误：400
+2026-03-31 12:44:49.587 [scheduling-1] ERROR c.c.notify.worker.scheduler.DeliveryScheduler - 投递任务异常：message={"id":2038887363124731906,"bizId":"testid-1234","supplierCode":"INVENTORY","targetUrl":null,"httpMethod":"POST","headers":"{\"Authorization\":\"Bearer xxx\"}","body":"{\"orderId\":\"123456\",\"status\":\"completed\"}","status":"FAILED","retryCount":125,"maxRetryCount":10,"nextRetryAt":"2026-03-31T12:44:48.546823","lastDeliveredAt":null,"failureReason":null,"lastErrorMessage":null,"extData":null,"createdAt":"2026-03-31T07:53:23","updatedAt":"2026-03-31T12:44:43.546845"}
+com.company.notify.common.exception.DeliveryException: 客户端错误：400
+	at com.company.notify.worker.service.DeliveryService.deliver(DeliveryService.java:110)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.deliverTaskFromQueue(DeliveryScheduler.java:128)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.pollAndDeliver(DeliveryScheduler.java:91)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(Unknown Source)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+2026-03-31 12:44:49.601 [scheduling-1] INFO  c.c.notify.worker.scheduler.DeliveryScheduler - 【Worker】从 Redis 加载任务 - Task 结构体：bizId=test-123451, taskId=2038827877213876226, supplierCode=INVENTORY, url=null, method=POST, body={"orderId":"123456","status":"completed"}, status=FAILED, retryCount=2022/10, nextRetryAt=2026-03-31T12:44:48.034723
+2026-03-31 12:44:49.604 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】开始投递任务 - Task 结构体：bizId=test-123451, taskId=2038827877213876226, url=null, method=POST, headers={"Authorization":"Bearer xxx"}, body={"orderId":"123456","status":"completed"}, retryCount=2022/10, timeout=10000
+2026-03-31 12:44:49.604 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用供应商配置模式：bizId=test-123451, supplierCode=INVENTORY
+2026-03-31 12:44:49.604 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 使用供应商配置投递：supplierCode=INVENTORY, targetUrl=https://httpbin.org/post
+2026-03-31 12:44:49.605 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用配置构建请求：url=https://httpbin.org/post, method=POST, body={
+  "orderId": "123456",
+  "status": "completed",
+  "timestamp": "1774961089604",
+  "bizId": "test-123451"
+}
+
+2026-03-31 12:44:49.894 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递响应：bizId=test-123451, taskId=2038827877213876226, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:49.895 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】客户端错误，不重试：bizId=test-123451, taskId=2038827877213876226, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:49.895 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递失败：bizId=test-123451, taskId=2038827877213876226, httpCode=400, retryCount=2022, error=客户端错误：400
+2026-03-31 12:44:49.895 [scheduling-1] ERROR c.c.notify.worker.scheduler.DeliveryScheduler - 投递任务异常：message={"id":2038827877213876226,"bizId":"test-123451","supplierCode":"INVENTORY","targetUrl":null,"httpMethod":"POST","headers":"{\"Authorization\":\"Bearer xxx\"}","body":"{\"orderId\":\"123456\",\"status\":\"completed\"}","status":"FAILED","retryCount":2022,"maxRetryCount":10,"nextRetryAt":"2026-03-31T12:44:48.034723","lastDeliveredAt":null,"failureReason":null,"lastErrorMessage":null,"extData":null,"createdAt":"2026-03-31T03:57:00.174165","updatedAt":"2026-03-31T12:44:43.034746"}
+com.company.notify.common.exception.DeliveryException: 客户端错误：400
+	at com.company.notify.worker.service.DeliveryService.deliver(DeliveryService.java:110)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.deliverTaskFromQueue(DeliveryScheduler.java:128)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.pollAndDeliver(DeliveryScheduler.java:91)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(Unknown Source)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+2026-03-31 12:44:49.907 [scheduling-1] INFO  c.c.notify.worker.scheduler.DeliveryScheduler - 【Worker】从 Redis 加载任务 - Task 结构体：bizId=test-biz-1774930194, taskId=2038831125651439617, supplierCode=INVENTORY, url=null, method=POST, body={"orderId":"123456","status":"completed"}, status=FAILED, retryCount=1874/10, nextRetryAt=2026-03-31T12:44:48.276669
+2026-03-31 12:44:49.911 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】开始投递任务 - Task 结构体：bizId=test-biz-1774930194, taskId=2038831125651439617, url=null, method=POST, headers={"Authorization":"Bearer xxx"}, body={"orderId":"123456","status":"completed"}, retryCount=1874/10, timeout=10000
+2026-03-31 12:44:49.911 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用供应商配置模式：bizId=test-biz-1774930194, supplierCode=INVENTORY
+2026-03-31 12:44:49.911 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 使用供应商配置投递：supplierCode=INVENTORY, targetUrl=https://httpbin.org/post
+2026-03-31 12:44:49.911 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用配置构建请求：url=https://httpbin.org/post, method=POST, body={
+  "orderId": "123456",
+  "status": "completed",
+  "timestamp": "1774961089911",
+  "bizId": "test-biz-1774930194"
+}
+
+2026-03-31 12:44:50.200 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递响应：bizId=test-biz-1774930194, taskId=2038831125651439617, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:50.201 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】客户端错误，不重试：bizId=test-biz-1774930194, taskId=2038831125651439617, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:50.202 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递失败：bizId=test-biz-1774930194, taskId=2038831125651439617, httpCode=400, retryCount=1874, error=客户端错误：400
+2026-03-31 12:44:50.202 [scheduling-1] ERROR c.c.notify.worker.scheduler.DeliveryScheduler - 投递任务异常：message={"id":2038831125651439617,"bizId":"test-biz-1774930194","supplierCode":"INVENTORY","targetUrl":null,"httpMethod":"POST","headers":"{\"Authorization\":\"Bearer xxx\"}","body":"{\"orderId\":\"123456\",\"status\":\"completed\"}","status":"FAILED","retryCount":1874,"maxRetryCount":10,"nextRetryAt":"2026-03-31T12:44:48.276669","lastDeliveredAt":null,"failureReason":null,"lastErrorMessage":null,"extData":null,"createdAt":"2026-03-31T04:09:54.652724","updatedAt":"2026-03-31T12:44:43.27668"}
+com.company.notify.common.exception.DeliveryException: 客户端错误：400
+	at com.company.notify.worker.service.DeliveryService.deliver(DeliveryService.java:110)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.deliverTaskFromQueue(DeliveryScheduler.java:128)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.pollAndDeliver(DeliveryScheduler.java:91)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(Unknown Source)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+2026-03-31 12:44:52.238 [scheduling-1] INFO  c.c.notify.worker.scheduler.DeliveryScheduler - 获取到 1 个待投递任务
+2026-03-31 12:44:52.241 [scheduling-1] INFO  c.c.notify.worker.scheduler.DeliveryScheduler - 【Worker】从 Redis 加载任务 - Task 结构体：bizId=test-12345, taskId=2038825462910889986, supplierCode=INVENTORY, url=null, method=POST, body={"orderId":"123456","status":"completed"}, status=FAILED, retryCount=2116/10, nextRetryAt=2026-03-31T12:44:52.949737
+2026-03-31 12:44:52.246 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】开始投递任务 - Task 结构体：bizId=test-12345, taskId=2038825462910889986, url=null, method=POST, headers={"Authorization":"Bearer xxx"}, body={"orderId":"123456","status":"completed"}, retryCount=2116/10, timeout=10000
+2026-03-31 12:44:52.246 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用供应商配置模式：bizId=test-12345, supplierCode=INVENTORY
+2026-03-31 12:44:52.247 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 使用供应商配置投递：supplierCode=INVENTORY, targetUrl=https://httpbin.org/post
+2026-03-31 12:44:52.247 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】使用配置构建请求：url=https://httpbin.org/post, method=POST, body={
+  "orderId": "123456",
+  "status": "completed",
+  "timestamp": "1774961092247",
+  "bizId": "test-12345"
+}
+
+2026-03-31 12:44:52.554 [scheduling-1] INFO  com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递响应：bizId=test-12345, taskId=2038825462910889986, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:52.554 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】客户端错误，不重试：bizId=test-12345, taskId=2038825462910889986, statusCode=400, response=<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+</body>
+</html>
+
+2026-03-31 12:44:52.555 [scheduling-1] ERROR com.company.notify.worker.service.DeliveryService - 【Worker.Delivery】投递失败：bizId=test-12345, taskId=2038825462910889986, httpCode=400, retryCount=2116, error=客户端错误：400
+2026-03-31 12:44:52.556 [scheduling-1] ERROR c.c.notify.worker.scheduler.DeliveryScheduler - 投递任务异常：message={"id":2038825462910889986,"bizId":"test-12345","supplierCode":"INVENTORY","targetUrl":null,"httpMethod":"POST","headers":"{\"Authorization\":\"Bearer xxx\"}","body":"{\"orderId\":\"123456\",\"status\":\"completed\"}","status":"FAILED","retryCount":2116,"maxRetryCount":10,"nextRetryAt":"2026-03-31T12:44:52.949737","lastDeliveredAt":null,"failureReason":null,"lastErrorMessage":null,"extData":null,"createdAt":"2026-03-31T11:47:24.550202","updatedAt":"2026-03-31T12:44:47.949759"}
+com.company.notify.common.exception.DeliveryException: 客户端错误：400
+	at com.company.notify.worker.service.DeliveryService.deliver(DeliveryService.java:110)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.deliverTaskFromQueue(DeliveryScheduler.java:128)
+	at com.company.notify.worker.scheduler.DeliveryScheduler.pollAndDeliver(DeliveryScheduler.java:91)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(Unknown Source)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+2026-03-31 12:44:53.465 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-03-31 12:44:53.470 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
