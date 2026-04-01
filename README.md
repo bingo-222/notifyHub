@@ -353,7 +353,7 @@ notify_task_202604    # 2026 年 4 月
 
 ## 6. 运行和调试
 
-运行时最好断开VPN!!
+运行时最好断开VPN!! 本机运行环境为Mac OS M2
 
 ### 本地开发（Docker Compose）
 
