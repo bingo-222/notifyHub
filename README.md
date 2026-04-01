@@ -26,11 +26,7 @@
 
 ### 1.3 系统架构
 
-```
-业务系统 → Gateway(API) → DB + Redis → Worker → 外部供应商 API
-                ↓                        ↓
-            管理后台                  监控告警
-```
+![arch](./arch.png)
 
 DB在这里主要是用于结果的审计和查询。如果在少数极端情况，比如秒杀，可以临时修改代码断开DB来保证QPS
 
@@ -60,14 +56,41 @@ PENDING → PROCESSING → SUCCESS
 curl -X POST http://localhost:8080/api/notify/submit \
   -H "Content-Type: application/json" \
   -d '{
-    "bizId": "biz-123456",
-    "supplierCode": "INVENTORY",
-    "headers": "{\"Authorization\":\"Bearer xxx\"}",
-    "body": "{\"orderId\":\"123456\",\"status\":\"completed\"}"
+    "bizId": "biz-123456",  <-------业务id, 用于幂等性校验
+    "supplierCode": "INVENTORY",   <-----供应商代码，用于从supplier-config.yml来找到target url和http method
+    "headers": "{\"Authorization\":\"Bearer xxx\"}",  <--------发向供应商的header的值
+    "body": "{\"orderId\":\"123456\",\"status\":\"completed\"}"  <-------发向供应商的body的值
   }'
 ```
 
-worker需要根据这个supplierCode来在模板中找到target URL和其body/header模板并填入相应的值。这里的原则是谁提交谁负责目标信息。本系统只保证从消息从用户到供应商之间的可靠送达，并不会根据业务规则来处理源到目标的匹配工作，这不是本系统的目的。如果后续模版太多，可以将配置文件放入配置中心。
+supplier-config.yml示例
+```
+suppliers:
+  # 库存系统 - 使用 httpbin.org 作为测试
+  - supplierCode: "INVENTORY"
+    targetUrl: "https://httpbin.org/post"
+    httpMethod: "POST"
+    # 用户在提交任务时需要提供以下模版中的值
+    headersTemplate:
+      Content-Type: "application/json"
+      Authorization: "Bearer {{accessToken:default-token}}"
+      X-Supplier-Code: "{{supplierCode}}"
+    bodyTemplate: |
+      {
+        "orderId": "{{orderId}}",
+        "status": "{{status}}",
+        "timestamp": "{{timestamp}}",
+        "bizId": "{{bizId}}"
+      }
+    timeoutMs: 30000
+    maxRetryCount: 10
+
+```
+worker需要根据这个supplierCode来在模板中找到target URL和其body/header模板并填入相应的值。
+
+
+
+这里的原则是谁提交谁负责目标信息。本系统只保证从消息从用户到供应商之间的可靠送达，并不会根据业务规则来处理源到目标的匹配工作，这不是本系统的目的。如果后续模版太多，可以将配置文件放入配置中心并允许动态修改。
 
 3. **消息队列抽象**：定义 `MessageQueueService` 接口，当前实现 `RedisMessageQueueService`，便于后续扩展到 Kafka 等中间件
 
